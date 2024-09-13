@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  /* .text-balance {
+    text-wrap: balance; */
+  /* } */
+
+  .splash {
+    background-image: url("../public/Images/spalshBG.png");
+    background-color: #ec5934;
+  }
+  .commentShdw {
+    box-shadow: 0px -1px 4px 1px #00000038;
+  }
+  * {
+    padding: 0px;
+    /* border: 0px;
+    text-decoration: none; */
+    box-sizing: border-box;
+  }
+  :root {
+    --vh: 1vh; /* Default value */
+  }
+}
