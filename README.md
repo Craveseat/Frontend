@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CraveSeat — Next.js + TypeScript + MongoDB
 
-## Getting Started
+A modern full-stack web application built with **Next.js**, **TypeScript**, and **MongoDB**.  
+Implements authentication (NextAuth with Credentials), secure user registration, and structured API endpoints for managing cravings.
 
-First, run the development server:
+## 🚀 Features
+
+- **Next.js 14 App Router** for a modern, server-first architecture
+- **TypeScript** for type safety and maintainability
+- **MongoDB** with Mongoose for flexible data modeling
+- **NextAuth.js** Credentials authentication
+- **Secure password hashing** with `bcrypt-ts`
+- Modular, refactored API endpoints (`/register`, `/api/user/[id]`, etc.)
+- Dockerized MongoDB setup with `restart: unless-stopped` and health checks
+
+---
+
+## 🛠 Prerequisites
+
+Make sure you have the following installed:
+
+- [Node.js 18+](https://nodejs.org/en/download/)
+- [pnpm](https://pnpm.io/), npm, yarn, or bun
+- [Docker](https://www.docker.com/) (for local MongoDB)
+
+---
+
+## ⚙️ Getting Started
+
+### 1. Clone the repository
 
 ```bash
+git clone https://github.com/your-username/craveseat.git
+cd craveseat
+````
+
+### 2. Install dependencies
+
+```bash
+pnpm install
+# or
+npm install
+# or
+yarn install
+# or
+bun install
+```
+
+### 3. Start MongoDB (Docker)
+
+```bash
+docker compose up -d
+```
+
+This uses the included `docker-compose.yml`:
+
+- **MongoDB** runs with `restart: unless-stopped`
+- Root username & password are set via environment variables
+- Persistent volume `mongodb_data` stores your database data
+- Built-in health check ensures MongoDB is ready before use
+
+### 4. Create `.env.local`
+
+```env
+MONGODB_URI=mongodb://root:password@localhost:27017/myapp?authSource=admin
+NEXTAUTH_SECRET=your-secret-key
+NEXTAUTH_URL=http://localhost:3000
+```
+
+### 5. Run the development server
+
+```bash
+pnpm dev
+# or
 npm run dev
 # or
 yarn dev
 # or
-pnpm dev
-# or
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Now visit [http://localhost:3000](http://localhost:3000) 🎉
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 🔐 Authentication
 
-## Learn More
+This project uses **NextAuth.js** with **CredentialsProvider**:
 
-To learn more about Next.js, take a look at the following resources:
+- Username + Password login
+- Password hashing via `bcrypt-ts`
+- Secure session management
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## 📜 Scripts
 
-## Deploy on Vercel
+```bash
+pnpm dev       # Start dev server
+pnpm build     # Build production bundle
+pnpm start     # Start production server
+pnpm lint      # Run ESLint
+docker compose up -d   # Start MongoDB
+docker compose down    # Stop MongoDB
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📚 Learn More
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [NextAuth.js Documentation](https://next-auth.js.org/)
+- [Mongoose Documentation](https://mongoosejs.com/docs/)
+
+## 🚀 Deployment
+
+Deploy easily on [Vercel](https://vercel.com/) or your preferred Node hosting.
+If using Vercel, set your environment variables in the **Vercel Dashboard**.

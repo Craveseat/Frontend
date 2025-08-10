@@ -1,53 +1,60 @@
-import bcrypt from "bcrypt-ts";
+import bcrypt from "bcryptjs";
 import { CraveSeatUser } from "@/models/User";
-import connectDB from "@/config/db";
-import mongoose from "mongoose";
+import {connectDB} from "@/config/db";
 import { NextResponse } from "next/server";
 
 export const POST = async (req: Request) => {
-  const { username, email, password, confirmPassword } = await req.json();
-
-  if (password !== confirmPassword) {
-    return new NextResponse(
-      JSON.stringify({ error: "Passwords do not match" }),
-      { status: 400 }
-    );
-  }
-
-  await connectDB();
-
-  const existingEmail = await CraveSeatUser.findOne({ email });
-  const existingUsername = await CraveSeatUser.findOne({ username });
-
-  if (existingEmail) {
-    return NextResponse.json(
-      { error: "User with email already exist" },
-      { status: 400 }
-    );
-  } else if (existingUsername) {
-    return NextResponse.json(
-      { error: "Username already Taken" },
-      { status: 400 }
-    );
-  }
-
-  // const hashedPassword = await bcrypt.hash(password, 10);
-  const newCraveSeatUser = new CraveSeatUser({
-    username,
-    email,
-    password,
-  });
-
   try {
-    await newCraveSeatUser.save();
+    const { username, email, password, confirmPassword } = await req.json();
 
-    return new NextResponse(
-      JSON.stringify({ message: "User successfully created" }),
-      {
-        status: 201,
-      }
+    // Basic validation
+    if (!username || !email || !password || !confirmPassword) {
+      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+    }
+
+    if (password !== confirmPassword) {
+      return NextResponse.json({ error: "Passwords do not match" }, { status: 400 });
+    }
+
+    // Connect to DB
+    await connectDB();
+
+    // Check if user already exists (email or username)
+    const existingUser = await CraveSeatUser.findOne({
+      $or: [{ email }, { username }],
+    });
+
+    if (existingUser) {
+      return NextResponse.json(
+        {
+          error:
+            existingUser.email === email
+              ? "User with this email already exists"
+              : "Username already taken",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user
+    const newUser = await CraveSeatUser.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    return NextResponse.json(
+      { message: "User successfully created", userId: newUser._id },
+      { status: 201 }
     );
-  } catch (error) {
-    return new NextResponse(JSON.stringify({ error: error }), { status: 400 });
+  } catch (err) {
+    console.error("Registration error:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Internal server error" },
+      { status: 500 }
+    );
   }
 };

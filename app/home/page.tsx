@@ -475,7 +475,7 @@ function Page() {
             <div className="flex flex-col gap-[2px] ">
               <h1 className="text-lg font-semibold text-white">
                 Welcome,{" "}
-                <span className="text-[#3CB9A3]">{session?.user?.email}</span>{" "}
+                <span className="text-[#3CB9A3]">{session?.user?.name}</span>{" "}
               </h1>
               <div className="flex items-center gap-2 ">
                 <Image src={Location} alt="location" />
