@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import UseViewPortHeight from "@/utils/UseViewPortHeight";
 import { signIn, useSession } from "next-auth/react";
+import { UserRound } from "lucide-react";
 // import { useRouter } from "next/router";
 
 const montserrat = Montserrat({
@@ -29,6 +30,7 @@ function Page() {
     username: "",
     password: "",
   });
+  const [error, setError] = useState("");
 
   // function to update  form state
   const handleChange = (
@@ -54,7 +56,7 @@ function Page() {
     const { username, password } = loginDetails;
 
     if (!username || !password) {
-      alert("please fill in all fields");
+      setError("please fill in all fields");
     }
 
     const res = await signIn("credentials", {
@@ -68,87 +70,99 @@ function Page() {
         router.replace("/home");
       }
 
-      alert("Invalid username or password");
+      setError("Invalid username or password");
     } else {
-      alert("Login successful");
+      router.push("/home");
     }
     // router.push("/home");
   };
 
   return (
     <div
-      className={`w-screen min-h-screen-vh p-10 px-14 bg-[#EAEAEA] flex flex-col justify-center items-center gap-6 ${montserrat.className}  `}
+      className={`w-screen min-h-screen-vh p-10 px-14 bg-[#EAEAEA] flex flex-col lg:flex-row-reverse justify-center items-center gap-6 ${montserrat.className}  `}
     >
-      <div className="mt-10">
-        <Image src={logo} alt="craveseatLogo" width={180} height={180} />
+      <div className="mt-10  w-full flex flex-col justify-center items-center gap-20 ">
+        <Image src={logo} alt="craveseatLogo" width={220} height={180} />
+        <p className="hidden max-w-[500px] w-full text-center lg:block text-lg  ">
+          Share your cravings with our vibrant community, and let the satisfiers
+          work their magic. Every craving is an opportunity to connect, inspire,
+          and indulge.
+        </p>
       </div>
-      <div className=" w-full flex flex-col items-center gap-6 ">
-        <h2 className={`font-bold text-left w-full text-3xl`}>Sign In</h2>
-        <form
-          className="flex flex-col w-full gap-5 items-center "
-          action="post"
-          onSubmit={signInRedrct}
-        >
-          <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
-            <Image src={user} alt="user" />
-            <input
-              className=" rounded-lg bg-transparent outline-none w-full border-none "
-              type="text"
-              name="username"
-              placeholder="username"
-              value={loginDetails.username}
-              onChange={(e) => handleChange(e, "username")}
-              id=""
-            />
-          </div>
-          <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
-            <Image src={password} alt="password" />
-            <input
-              className=" rounded-lg bg-transparent outline-none w-full border-none "
-              type="password"
-              name="password"
-              placeholder="password"
-              value={loginDetails.password}
-              onChange={(e) => handleChange(e, "password")}
-              id=""
-            />
-          </div>
-          <Link href="/forgotPassword" className=" w-full text-right ">
-            Forgot password?
-          </Link>
-          <button
-            type="submit"
-            className="bg-[#EC5934] w-full text-white rounded-2xl px-5 py-4 shadow-lg "
+      <div className="flex w-full  flex-col justify-center items-center gap-6 ">
+        <div className=" w-full max-w-[400px] flex flex-col items-center gap-4 lg:gap-6 ">
+          <h2
+            className={`font-semibold text-left lg:text-center lg:text-2xl w-full text-xl`}
           >
-            Sign in
-          </button>
-          {/* <Butto func={signInRedrct} text="Sign in" /> */}
-        </form>
-      </div>
-      <div className=" w-full flex items-center flex-col gap-4 ">
-        <div className="flex gap-8 items-center">
-          <div className="w-10 h-[1px] bg-[#A4A4A4]"></div>
-          <div>or</div>
-          <div className="w-10 h-[1px] bg-[#A4A4A4]"></div>
+            Sign In
+          </h2>
+          <form
+            className="flex flex-col w-full gap-5 items-center "
+            action="post"
+            onSubmit={signInRedrct}
+          >
+            <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <UserRound size={24} />
+              <input
+                className=" rounded-lg bg-transparent outline-none w-full border-none "
+                type="text"
+                name="username"
+                placeholder="username"
+                value={loginDetails.username}
+                onChange={(e) => handleChange(e, "username")}
+                id=""
+              />
+            </div>
+            <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <Image src={password} alt="password" />
+              <input
+                className=" rounded-lg bg-transparent outline-none w-full border-none "
+                type="password"
+                name="password"
+                placeholder="password"
+                value={loginDetails.password}
+                onChange={(e) => handleChange(e, "password")}
+                id=""
+              />
+            </div>
+            <Link
+              href="/forgotPassword"
+              className=" w-full text-right text-sm "
+            >
+              Forgot password?
+            </Link>
+            <button
+              type="submit"
+              className="bg-[#EC5934] w-full text-white rounded-2xl px-5 py-4 shadow-lg "
+            >
+              Sign in
+            </button>
+            {error && (
+              <p className="text-red-600 text-sm -my-4 lg:col-span-2 font-medium text-center">
+                {error}
+              </p>
+            )}
+            {/* <Butto func={signInRedrct} text="Sign in" /> */}
+          </form>
         </div>
-        <button className="bg-transparent rounded-3xl border border-[#00000066] w-full flex gap-3 px-3 py-4 justify-center items-center shadow-lg ">
-          {" "}
-          <Image className="" src={google} alt="google" /> Continue with google
-        </button>
-        <h2 className="font-semibold">
-          Do not have an account?{" "}
-          <Link href="/signup" className="text-[#EC5934] font-semibold">
-            Sign Up
-          </Link>
-        </h2>
-        <p className="text-center mt-[15px] ">
-          By continuing, you agree to Craveseat’s Terms of Service and
-          acknowledge you’ve read our Privacy Policy.
-        </p>
-        <p>
-          Are you a business?{" "}
-          <span className="underline">Get started here!</span>{" "}
-        </p>
+        <div className=" w-full  max-w-[400px] flex items-center flex-col gap-4 ">
+          <div className="flex gap-8 items-center">
+            <div className="w-10 h-[1px] bg-[#A4A4A4]"></div>
+            <div>or</div>
+            <div className="w-10 h-[1px] bg-[#A4A4A4]"></div>
+          </div>
+          <button className="bg-transparent rounded-2xl border border-[#00000066] w-full flex gap-3 px-3 py-4 justify-center items-center shadow-lg ">
+            {" "}
+            <Image className="" src={google} alt="google" /> Continue with
+            google
+          </button>
+          <h2 className="font-semibold">
+            Do not have an account?{" "}
+            <Link href="/signup" className="text-[#EC5934] font-semibold">
+              Sign Up
+            </Link>
+          </h2>
+        </div>
       </div>
     </div>
   );

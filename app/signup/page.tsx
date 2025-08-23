@@ -33,6 +33,7 @@ function Page() {
   UseViewPortHeight();
   const router = useRouter();
   const [formData, setFormData] = useState(formDetails);
+  const [error, setError] = useState("");
 
   const editFormDetails = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -43,13 +44,14 @@ function Page() {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
     const { username, email, password, confirmPassword } = formData;
 
     if (!username || !email || !password || !confirmPassword) {
-      alert("Please fill in all the fields");
+      setError("Please fill in all the fields");
       return;
     } else if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      setError("Passwords do not match");
       return;
     }
 
@@ -70,124 +72,151 @@ function Page() {
       const newRes = await res.json();
 
       if (res.ok) {
-        alert("Successfully created user");
-        router.push("/signin");
+        // setSuccessfulMsg("Successfully created user");
+        router.push("/home");
       } else {
-        alert(newRes.error);
+        setError(newRes.error);
       }
     } catch (error) {
-      alert("failed to create user");
+      setError("failed to create user");
     }
   };
   return (
     <div
-      className={`w-screen min-h-screen-vh p-10 px-14 bg-[#EAEAEA] flex flex-col justify-center items-center gap-6 ${montserrat.className}  `}
+      className={`w-screen min-h-screen-vh p-10 px-14 bg-[#EAEAEA] flex flex-col lg:flex-row-reverse justify-center items-center gap-6 ${montserrat.className}  `}
     >
-      <div className="grid grid-cols-3 gap-2 w-full ">
-        <button onClick={() => router.back()}>
+      <div className="w-full flex flex-col gap-6 items-center">
+        <div className="grid place-items-center gap-2 w-full ">
+          {/* <button onClick={() => router.back()}>
           <Image src={backarrow2} width={32} height={32} alt="back" />
-        </button>
-        <Image
-          src={logo}
-          priority={true}
-          placeholder="blur"
-          alt="craveseatlogo"
-        />
-      </div>
-      <div className="flex flex-col items-center w-full">
-        <h1 className="text-center font-medium text-[28px] ">
-          Welcome to Craveseat
-        </h1>
-        <p className="text-center">Have your cravings satisfied by others</p>
-      </div>
-      <div className=" w-full flex flex-col items-center gap-6 ">
-        <h2 className={`font-bold text-left w-full text-3xl`}>Sign Up</h2>
-        <form
-          onSubmit={handleSignUp}
-          action="post"
-          className="flex flex-col w-full gap-5 items-center "
-        >
-          <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
-            <Image src={user} alt="user" />
-            <input
-              className=" rounded-lg bg-transparent outline-none w-full border-none "
-              onChange={(e) => editFormDetails(e, "email")}
-              value={formData.email}
-              type="email"
-              name="email"
-              placeholder="email"
-              id="email"
-            />
-          </div>
-          <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
-            <Image src={user} alt="user" />
-            <input
-              className=" rounded-lg bg-transparent outline-none w-full border-none "
-              onChange={(e) => editFormDetails(e, "username")}
-              value={formData.username}
-              type="text"
-              name="username"
-              placeholder="username"
-              id="username"
-            />
-          </div>
-
-          <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
-            <Image src={password} alt="password" />
-            <input
-              className=" rounded-lg bg-transparent outline-none w-full border-none "
-              onChange={(e) => editFormDetails(e, "password")}
-              value={formData.password}
-              type="password"
-              name="password"
-              placeholder="Enter password"
-              id="password"
-            />
-          </div>
-          <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
-            <Image src={password} alt="password" />
-            <input
-              className=" rounded-lg bg-transparent outline-none w-full border-none "
-              onChange={(e) => editFormDetails(e, "confirmPassword")}
-              value={formData.confirmPassword}
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm password"
-              id="confirmPassword"
-            />
-          </div>
-          <button
-            type="submit"
-            className="bg-[#EC5934] w-full text-white rounded-2xl px-5 py-4 shadow-lg "
-          >
-            Continue
-          </button>
-        </form>
-      </div>
-      <div className=" w-full flex items-center flex-col gap-4 ">
-        <div className="flex gap-8 items-center">
-          <div className="w-10 h-[1px] bg-[#A4A4A4]"></div>
-          <div>or</div>
-          <div className="w-10 h-[1px] bg-[#A4A4A4]"></div>
+        </button> */}
+          <Image
+            src={logo}
+            priority={true}
+            placeholder="blur"
+            alt="craveseatlogo"
+          />
         </div>
-        <button className="bg-transparent rounded-3xl border border-[#00000066] w-full flex gap-3 px-3 py-4 justify-center items-center shadow-lg ">
-          {" "}
-          <Image className="" src={google} alt="google" /> Continue with google
-        </button>
-        <h2 className="font-semibold">
-          Already a member?{" "}
-          <Link href="/signin" className="text-[#EC5934] font-semibold">
-            Sign In
-          </Link>
-        </h2>
-        <p className="text-center mt-[15px] ">
-          By continuing, you agree to Craveseat’s Terms of Service and
-          acknowledge you’ve read our Privacy Policy.
-        </p>
-        <p>
-          Are you a business?{" "}
-          <span className="underline">Get started here!</span>{" "}
-        </p>
+        <div className="flex flex-col max-w-[400px] items-center w-full gap-3 ">
+          <h1 className="text-center font-medium text-[28px] ">
+            Welcome to Craveseat
+          </h1>
+          <p className="text-center">
+            Unlock a world where desires know no bounds. Indulge your desires
+            without restraint and let CraveSeat bring them to vivid reality.
+          </p>
+        </div>
+      </div>
+
+      <div className="w-full flex flex-col gap-4 items-center ">
+        <div className=" w-full max-w-[600px] flex flex-col items-center gap-6 ">
+          <h2 className={`font-bold text-left w-full text-3xl`}>Sign Up</h2>
+          <form
+            onSubmit={handleSignUp}
+            action="post"
+            className="flex flex-col lg:grid lg:grid-cols-2 w-full gap-5 items-center "
+          >
+            <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <Image src={user} alt="user" />
+              <input
+                className=" rounded-lg bg-transparent outline-none w-full border-none "
+                onChange={(e) => editFormDetails(e, "email")}
+                value={formData.email}
+                type="email"
+                name="email"
+                placeholder="email"
+                id="email"
+              />
+            </div>
+            <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <Image src={user} alt="user" />
+              <input
+                className=" rounded-lg bg-transparent outline-none w-full border-none "
+                onChange={(e) => editFormDetails(e, "username")}
+                value={formData.username}
+                type="text"
+                name="username"
+                placeholder="username"
+                id="username"
+              />
+            </div>
+
+            <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <Image src={password} alt="password" />
+              <input
+                className=" rounded-lg bg-transparent outline-none w-full border-none "
+                onChange={(e) => editFormDetails(e, "password")}
+                value={formData.password}
+                type="password"
+                name="password"
+                placeholder="Enter password"
+                id="password"
+              />
+            </div>
+            <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <Image src={password} alt="password" />
+              <input
+                className=" rounded-lg bg-transparent outline-none w-full border-none "
+                onChange={(e) => editFormDetails(e, "confirmPassword")}
+                value={formData.confirmPassword}
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm password"
+                id="confirmPassword"
+              />
+            </div>
+            <label
+              htmlFor="terms"
+              className="text-sm w-full flex  items-center gap-2 lg:col-span-2"
+            >
+              <input
+                className="accent-[#EC5934]"
+                type="checkbox"
+                name="terms"
+                id="terms"
+              />
+              <p className="text-center mt-[15px] text-xs ">
+                By continuing, you agree to Craveseat’s Terms of Service and
+                acknowledge you’ve read our Privacy Policy.
+              </p>
+            </label>
+
+            <button
+              type="submit"
+              className="bg-[#EC5934] w-full text-white rounded-2xl px-5 py-4 lg:col-span-2 shadow-lg "
+            >
+              Continue
+            </button>
+            {error && (
+              <p className="text-red-600 text-sm -my-4 lg:col-span-2 font-medium text-center">
+                {error}
+              </p>
+            )}
+          </form>
+        </div>
+        <div className=" w-full max-w-[600px] flex items-center flex-col gap-4 ">
+          <div className="flex gap-8 items-center">
+            <div className="w-10 h-[1px] bg-[#A4A4A4]"></div>
+            <div>or</div>
+            <div className="w-10 h-[1px] bg-[#A4A4A4]"></div>
+          </div>
+          <button className="bg-transparent rounded-2xl border border-[#00000066] w-full flex gap-3 px-3 py-4 justify-center items-center shadow-lg ">
+            {" "}
+            <Image className="" src={google} alt="google" /> Continue with
+            google
+          </button>
+          <h2 className="font-semibold text-sm">
+            Already a member?{" "}
+            <Link href="/signin" className="text-[#EC5934] font-semibold">
+              Sign In
+            </Link>
+          </h2>
+
+          <p>
+            Are you a business?{" "}
+            <span className="underline">Get started here!</span>{" "}
+          </p>
+        </div>
       </div>
     </div>
   );

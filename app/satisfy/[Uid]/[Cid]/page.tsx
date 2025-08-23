@@ -84,8 +84,17 @@ const Satisfy = ({ params }: { params: any }) => {
   };
 
   useEffect(() => {
+    const getCraving = async () => {
+      const res = await fetch(`/api/Users/${userId}/${cravingId}`, {
+        method: "GET",
+      });
+      const data = await res.json();
+      //console.log(data);
+      setCraving(data.specificCraving);
+      setUser(data.user);
+    };
     getCraving();
-  }, []);
+  }, [userId, cravingId]);
 
   return (
     <div className="bg-[#EAEAEA] min-h-screen-vh h-full flex flex-col items-center w-full gap-7 pt-3 px-4 pb-[30px] ">
