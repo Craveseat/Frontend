@@ -5,12 +5,13 @@ import Link from "next/link";
 import UseViewPortHeight from "@/utils/UseViewPortHeight";
 import { signOut, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { authServices } from "@/utils/api";
 
 const Layout = ({ children }: { children: any }) => {
   UseViewPortHeight();
   const session = useSession();
 
-  if (session.status === "unauthenticated") {
+  if (!authServices.getAccessToken()) {
     redirect("/signin");
   }
   return (

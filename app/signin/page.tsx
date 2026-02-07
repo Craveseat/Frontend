@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import UseViewPortHeight from "@/utils/UseViewPortHeight";
 import { signIn, useSession } from "next-auth/react";
 import { UserRound } from "lucide-react";
+import { authServices } from "@/utils/api";
 // import { useRouter } from "next/router";
 
 const montserrat = Montserrat({
@@ -27,15 +28,16 @@ function Page() {
 
   //form details state
   const [loginDetails, setLoginDetails] = useState({
-    username: "",
+    email_or_username: "",
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // function to update  form state
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: string
+    field: string,
   ) => {
     setLoginDetails((prev) => ({
       ...prev,
@@ -45,41 +47,36 @@ function Page() {
 
   //function to redirect
   useEffect(() => {
-    if (sessionStatus === "authenticated") {
+    if (authServices.getAccessToken()) {
       router.push("/home");
     }
-  }, [sessionStatus, router]);
+  }, [authServices, router]);
 
   //handle login
-  const signInRedrct = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { username, password } = loginDetails;
+    setLoading(true);
+    setError("");
+    const { email_or_username, password } = loginDetails;
 
-    if (!username || !password) {
+    if (!email_or_username || !password) {
       setError("please fill in all fields");
     }
-
-    const res = await signIn("credentials", {
-      redirect: false,
-      username,
-      password,
-    });
-    console.log(res);
-    if (res?.error) {
-      if (res?.url) {
-        router.replace("/home");
-      }
-
-      setError("Invalid username or password");
-    } else {
+    try {
+      const res = await authServices.loginUser(loginDetails);
+      console.log(res);
       router.push("/home");
+    } catch (error: any) {
+      console.log(error);
+      setError(error.message || "An error occurred while logging you in");
+    } finally {
+      setLoading(false);
     }
-    // router.push("/home");
   };
 
   return (
     <div
-      className={`w-screen min-h-screen-vh p-10 px-14 bg-[#EAEAEA] flex flex-col lg:flex-row-reverse justify-center items-center gap-6 ${montserrat.className}  `}
+      className={`w-screen min-h-screen-vh p-10 px-7 bg-[#EAEAEA] flex flex-col lg:flex-row-reverse justify-center items-center gap-6 ${montserrat.className}  `}
     >
       <div className="mt-10  w-full flex flex-col justify-center items-center gap-20 ">
         <Image src={logo} alt="craveseatLogo" width={220} height={180} />
@@ -92,39 +89,46 @@ function Page() {
       <div className="flex w-full  flex-col justify-center items-center gap-6 ">
         <div className=" w-full max-w-[400px] flex flex-col items-center gap-4 lg:gap-6 ">
           <h2
-            className={`font-semibold text-left lg:text-center lg:text-2xl w-full text-xl`}
+            className={`font-semibold text-left lg:text-center lg:text-xl w-full text-xl`}
           >
             Sign In
           </h2>
           <form
             className="flex flex-col w-full gap-5 items-center "
             action="post"
-            onSubmit={signInRedrct}
+            onSubmit={handleLogin}
           >
-            <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
-              <UserRound size={24} />
-              <input
-                className=" rounded-lg bg-transparent outline-none w-full border-none "
-                type="text"
-                name="username"
-                placeholder="username"
-                value={loginDetails.username}
-                onChange={(e) => handleChange(e, "username")}
-                id=""
-              />
-            </div>
-            <div className="p-3 px-7 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
-              <Image src={password} alt="password" />
-              <input
-                className=" rounded-lg bg-transparent outline-none w-full border-none "
-                type="password"
-                name="password"
-                placeholder="password"
-                value={loginDetails.password}
-                onChange={(e) => handleChange(e, "password")}
-                id=""
-              />
-            </div>
+            <label className="flex flex-col w-full gap-1" htmlFor="username">
+              <span className="text-sm text-gray-500 ">Username/Email</span>
+              <div className="p-3 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+                <UserRound size={24} />
+                <input
+                  className=" rounded-lg bg-transparent outline-none w-full border-none "
+                  type="text"
+                  name="email_or_username"
+                  placeholder="username/email"
+                  value={loginDetails.email_or_username}
+                  onChange={(e) => handleChange(e, "email_or_username")}
+                  id=""
+                />
+              </div>
+            </label>
+
+            <label className="flex flex-col w-full gap-1" htmlFor="password">
+              <span className="text-sm text-gray-500 ">Password</span>
+              <div className="p-3 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+                <Image src={password} alt="password" />
+                <input
+                  className=" rounded-lg bg-transparent outline-none w-full border-none "
+                  type="password"
+                  name="password"
+                  placeholder="password"
+                  value={loginDetails.password}
+                  onChange={(e) => handleChange(e, "password")}
+                  id=""
+                />
+              </div>
+            </label>
             <Link
               href="/forgotPassword"
               className=" w-full text-right text-sm "
@@ -133,9 +137,10 @@ function Page() {
             </Link>
             <button
               type="submit"
-              className="bg-[#EC5934] w-full text-white rounded-2xl px-5 py-4 shadow-lg "
+              disabled={loading}
+              className="bg-[#EC5934] w-full text-white rounded-2xl px-5 py-4 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed "
             >
-              Sign in
+              {loading ? "Signing in..." : "Sign in"}
             </button>
             {error && (
               <p className="text-red-600 text-sm -my-4 lg:col-span-2 font-medium text-center">

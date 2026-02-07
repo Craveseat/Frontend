@@ -21,8 +21,9 @@ import Craving1 from "@/public/Images/craving1.png";
 import Craving2 from "@/public/Images/craving2.png";
 import Craving3 from "@/public/Images/craving3.png";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authServices } from "@/utils/api";
+import { useRouter } from "next/navigation";
+// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { useSession } from "next-auth/react";
 // import Footer from "@/components/footer";
 
@@ -454,6 +455,13 @@ interface User {
 function Page() {
   const [users, setUsers] = useState<User[]>([]);
   const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authServices.getAccessToken()) {
+      router.push("/signin");
+    }
+  }, [authServices, router]);
 
   // if (session.status === "unauthenticated") {
   //   redirect("/signin");
@@ -475,7 +483,9 @@ function Page() {
             <div className="flex flex-col gap-[2px] ">
               <h1 className="text-lg font-semibold text-white">
                 Welcome,{" "}
-                <span className="text-[#3CB9A3]">{session?.user?.email}</span>{" "}
+                <span className="text-[#3CB9A3]">
+                  {session?.user?.email}
+                </span>{" "}
               </h1>
               <div className="flex items-center gap-2 ">
                 <Image src={Location} alt="location" />
@@ -581,7 +591,8 @@ function Page() {
                         {firstCraving.name}
                       </h2>
                       <p className=" text-[10px] text-[#9E9E9E] ">
-                        # {firstCraving.price} <span>{firstCraving.date}</span>{" "}
+                        # {firstCraving.price}{" "}
+                        <span>{firstCraving.date}</span>{" "}
                       </p>
                       <div className="flex gap-2 items-center ">
                         <Like />
