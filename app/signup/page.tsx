@@ -15,6 +15,7 @@ import UseViewPortHeight from "@/utils/UseViewPortHeight";
 import { useRouter } from "next/navigation";
 import { SignUpDetails } from "@/utils/types";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
+import { Eye, EyeOff } from "lucide-react";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -210,12 +211,19 @@ function Page() {
                   className=" rounded-lg bg-transparent outline-none w-full border-none "
                   onChange={(e) => editFormDetails(e, "password")}
                   value={formData.password}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Enter password"
                   required
                   id="password"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </label>
 
@@ -230,12 +238,23 @@ function Page() {
                   className=" rounded-lg bg-transparent outline-none w-full border-none "
                   onChange={(e) => editFormDetails(e, "confirm_password")}
                   value={formData.confirm_password}
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   name="confirm_password"
                   placeholder="Confirm password"
                   required
                   id="confirm_password"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
               </div>
             </label>
             <label

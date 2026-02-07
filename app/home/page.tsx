@@ -22,9 +22,10 @@ import Craving2 from "@/public/Images/craving2.png";
 import Craving3 from "@/public/Images/craving3.png";
 import Link from "next/link";
 import { authServices } from "@/utils/api";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { useRouter } from "next/navigation";
 // import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 // import Footer from "@/components/footer";
 
 const section = [
@@ -454,7 +455,8 @@ interface User {
 
 function Page() {
   const [users, setUsers] = useState<User[]>([]);
-  const { data: session } = useSession();
+  const { user, setUserDetails } = useUserDetails();
+  // const { data: session } = useSession();
   const router = useRouter();
 
   // useEffect(() => {
@@ -484,13 +486,17 @@ function Page() {
               <h1 className="text-lg font-semibold text-white">
                 Welcome,{" "}
                 <span className="text-[#3CB9A3]">
-                  {session?.user?.email}
+                  {user?.full_name.split(" ")[0]}
                 </span>{" "}
               </h1>
               <div className="flex items-center gap-2 ">
                 <Image src={Location} alt="location" />
                 <p className="text-[11px] font-normal text-white ">
-                  12, Atilola hostel, Agbowo Ibadan.
+                  {user?.delivery_address ? (
+                    user.delivery_address
+                  ) : (
+                    <Link href="profile">Add delivery address</Link>
+                  )}
                 </p>
                 <Image src={Downarrow} alt="Dropdown" />
               </div>

@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import UseViewPortHeight from "@/utils/UseViewPortHeight";
 // import { signIn, useSession } from "next-auth/react";
-import { UserRound } from "lucide-react";
+import { UserRound, Eye, EyeOff } from "lucide-react";
 import { authServices } from "@/utils/api";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 
@@ -35,6 +35,7 @@ function Page() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // function to update  form state
   const handleChange = (
@@ -123,13 +124,20 @@ function Page() {
                 <Image src={password} alt="password" />
                 <input
                   className=" rounded-lg bg-transparent outline-none w-full border-none "
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="password"
                   value={loginDetails.password}
                   onChange={(e) => handleChange(e, "password")}
                   id=""
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </label>
             <Link
