@@ -88,11 +88,11 @@ export const authServices = {
     if (auth0Logout) {
       auth0Logout({
         logoutParams: {
-          returnTo: window.location.origin + "/",
+          returnTo: window.location.origin + "/signin",
         },
       });
     } else {
-      window.location.href = "/";
+      window.location.href = "/signin";
     }
   },
 

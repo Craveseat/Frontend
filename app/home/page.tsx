@@ -457,11 +457,11 @@ function Page() {
   const { data: session } = useSession();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!authServices.getAccessToken()) {
-      router.push("/signin");
-    }
-  }, [authServices, router]);
+  // useEffect(() => {
+  //   if (!authServices.getAccessToken()) {
+  //     router.push("/signin");
+  //   }
+  // }, [authServices, router]);
 
   // if (session.status === "unauthenticated") {
   //   redirect("/signin");

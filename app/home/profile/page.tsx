@@ -14,16 +14,15 @@ import FAQ from "@/public/Images/QA.png";
 import Toggle from "@/components/toggle";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { authServices } from "@/utils/api";
+// import { signOut, useSession } from "next-auth/react";
 
 const Profile = () => {
   const router = useRouter();
-  const session = useSession();
+  const handleSignOut = () => {
+    authServices.logout();
+  };
 
-  if (session.status === "unauthenticated") {
-    redirect("/signin");
-  }
   return (
     <div className="bg-[#EAEAEA] h-full ">
       <div className=" px-8 py-8 relative pb-20 w-full flex flex-col gap-8 overflow-clip items-center text-white before:content-[''] before:h-[1500px] before:aspect-square before:absolute before:bottom-0 before:bg-[#EC5934] before:z-0 before:rounded-b-[1500px] ">
@@ -129,7 +128,7 @@ const Profile = () => {
             </div>
           </div>
           <button
-            onClick={() => signOut()}
+            onClick={() => handleSignOut()}
             className="text-white rounded-full px-6 py-2 bg-[#898A8D] "
           >
             Logout

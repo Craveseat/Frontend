@@ -11,9 +11,11 @@ import Link from "next/link";
 // import Butto from "@/components/button";
 import { useRouter } from "next/navigation";
 import UseViewPortHeight from "@/utils/UseViewPortHeight";
-import { signIn, useSession } from "next-auth/react";
+// import { signIn, useSession } from "next-auth/react";
 import { UserRound } from "lucide-react";
 import { authServices } from "@/utils/api";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
+
 // import { useRouter } from "next/router";
 
 const montserrat = Montserrat({
@@ -24,8 +26,8 @@ const montserrat = Montserrat({
 function Page() {
   UseViewPortHeight();
   const router = useRouter();
-  const { data: session, status: sessionStatus } = useSession();
-
+  // const { data: session, status: sessionStatus } = useSession();
+  const { setUserDetails } = useUserDetails();
   //form details state
   const [loginDetails, setLoginDetails] = useState({
     email_or_username: "",
@@ -65,6 +67,7 @@ function Page() {
     try {
       const res = await authServices.loginUser(loginDetails);
       console.log(res);
+      setUserDetails(res?.data?.user);
       router.push("/home");
     } catch (error: any) {
       console.log(error);

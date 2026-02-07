@@ -14,6 +14,7 @@ import Link from "next/link";
 import UseViewPortHeight from "@/utils/UseViewPortHeight";
 import { useRouter } from "next/navigation";
 import { SignUpDetails } from "@/utils/types";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -37,6 +38,7 @@ function Page() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const { setUserDetails } = useUserDetails();
 
   const editFormDetails = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -81,8 +83,9 @@ function Page() {
 
     try {
       const res = await authServices.signUp(formData);
-      console.log(formData);
-      console.log(res);
+      // console.log(formData);
+      // console.log(res);
+      setUserDetails(res?.data?.user);
       router.push("/home");
     } catch (error: any) {
       console.log(error);

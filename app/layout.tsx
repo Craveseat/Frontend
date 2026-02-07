@@ -6,6 +6,7 @@ import { SessionContext, SessionProvider } from "next-auth/react";
 // import { authOptions } from "./api/auth/[...nextauth]/route";
 import { authOptions } from "@/utils/auth";
 import AuthProvider from "@/utils/sessionProvider";
+import { UserDetailsProvider } from "@/contexts/UserDetailsContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +24,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider session={session}>{children}</AuthProvider>
+        <AuthProvider session={session}>
+          <UserDetailsProvider>{children}</UserDetailsProvider>
+        </AuthProvider>
       </body>
     </html>
   );
