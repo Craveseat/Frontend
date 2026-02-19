@@ -93,15 +93,15 @@ const Profile = () => {
         <div className="bg-white rounded-2xl justify-start flex flex-col gap-5 w-full items-center p-5 ">
           <div className="flex flex-col gap-5 w-full  ">
             <h2 className="font-semibold">My account</h2>
-            <div className="flex justify-between items-center w-full mt-1 ">
-              <Link
-                href={"/home/profile/manage"}
-                className="flex text-[#50555C] items-center gap-2"
-              >
+            <Link
+              href={"/home/profile/manage"}
+              className="flex justify-between items-center w-full mt-1 "
+            >
+              <div className="flex text-[#50555C] items-center gap-2">
                 <Image src={ManageProfile} alt="icon" /> <p>Manage Profile</p>
-              </Link>{" "}
+              </div>{" "}
               <Image src={proceed} alt="nextarr" />{" "}
-            </div>
+            </Link>
             <div className="flex justify-between items-center w-full ">
               <div className="flex text-[#50555C] items-center gap-2">
                 <Image src={Address} alt="icon" /> <p>Addresses</p>
