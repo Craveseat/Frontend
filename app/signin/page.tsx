@@ -104,7 +104,7 @@ function Page() {
           >
             <label className="flex flex-col w-full gap-1" htmlFor="username">
               <span className="text-sm text-gray-500 ">Username/Email</span>
-              <div className="p-3 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <div className="p-3 w-full flex items-center gap-2 border rounded-xl shadow-lg border-[#EC5934] ">
                 <UserRound size={24} />
                 <input
                   className=" rounded-lg bg-transparent outline-none w-full border-none "
@@ -120,7 +120,7 @@ function Page() {
 
             <label className="flex flex-col w-full gap-1" htmlFor="password">
               <span className="text-sm text-gray-500 ">Password</span>
-              <div className="p-3 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <div className="p-3 w-full flex items-center gap-2 border rounded-xl shadow-lg border-[#EC5934] ">
                 <Image src={password} alt="password" />
                 <input
                   className=" rounded-lg bg-transparent outline-none w-full border-none "
@@ -149,7 +149,7 @@ function Page() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#EC5934] w-full text-white rounded-2xl px-5 py-4 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed "
+              className="bg-[#EC5934] w-full text-white rounded-xl px-5 py-4 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed "
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
@@ -167,7 +167,7 @@ function Page() {
             <div>or</div>
             <div className="w-10 h-[1px] bg-[#A4A4A4]"></div>
           </div>
-          <button className="bg-transparent rounded-2xl border border-[#00000066] w-full flex gap-3 px-3 py-4 justify-center items-center shadow-lg ">
+          <button className="bg-transparent rounded-xl border border-[#00000066] w-full flex gap-3 px-3 py-4 justify-center items-center shadow-lg ">
             {" "}
             <Image className="" src={google} alt="google" /> Continue with
             google

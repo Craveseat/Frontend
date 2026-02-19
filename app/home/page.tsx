@@ -486,7 +486,7 @@ function Page() {
               <h1 className="text-lg font-semibold text-white">
                 Welcome,{" "}
                 <span className="text-[#3CB9A3]">
-                  {user?.full_name.split(" ")[0]}
+                  {user?.full_name?.split(" ")[0]}
                 </span>{" "}
               </h1>
               <div className="flex items-center gap-2 ">

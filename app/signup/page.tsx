@@ -24,7 +24,7 @@ const montserrat = Montserrat({
 
 const formDetails: SignUpDetails = {
   username: "",
-  fullName: "",
+  full_name: "",
   phone_number: "",
   email: "",
   password: "",
@@ -63,7 +63,7 @@ function Page() {
       email,
       password,
       confirm_password,
-      fullName,
+      full_name,
       phone_number,
     } = formData;
 
@@ -72,7 +72,7 @@ function Page() {
       !email ||
       !password ||
       !confirm_password ||
-      !fullName ||
+      !full_name ||
       !phone_number
     ) {
       setError("Please fill in all the fields");
@@ -134,10 +134,10 @@ function Page() {
           >
             <label className="flex flex-col w-full gap-1" htmlFor="email">
               <span className="text-sm text-gray-500 ">Email</span>
-              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-xl shadow-lg border-[#EC5934] ">
                 <Image src={user} alt="user" />
                 <input
-                  className=" rounded-lg bg-transparent outline-none w-full border-none "
+                  className=" rounded-md bg-transparent outline-none w-full border-none "
                   onChange={(e) => editFormDetails(e, "email")}
                   value={formData.email}
                   type="email"
@@ -149,26 +149,26 @@ function Page() {
               </div>
             </label>
 
-            <label className="flex flex-col w-full gap-1" htmlFor="fullName">
+            <label className="flex flex-col w-full gap-1" htmlFor="full_name">
               <span className="text-sm text-gray-500 ">Full name</span>
-              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-xl shadow-lg border-[#EC5934] ">
                 <Image src={user} alt="user" />
                 <input
                   className=" rounded-lg bg-transparent outline-none w-full border-none "
-                  onChange={(e) => editFormDetails(e, "fullName")}
-                  value={formData.fullName}
+                  onChange={(e) => editFormDetails(e, "full_name")}
+                  value={formData.full_name}
                   type="text"
-                  name="fullName"
+                  name="full_name"
                   placeholder="Full name"
                   required
-                  id="fullName"
+                  id="full_name"
                 />
               </div>
             </label>
 
             <label className="flex flex-col w-full gap-1" htmlFor="username">
               <span className="text-sm text-gray-500 ">Username</span>
-              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-xl shadow-lg border-[#EC5934] ">
                 <Image src={user} alt="user" />
                 <input
                   className=" rounded-lg bg-transparent outline-none w-full border-none "
@@ -188,7 +188,7 @@ function Page() {
               htmlFor="phone_number"
             >
               <span className="text-sm text-gray-500 ">Phone number</span>
-              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-xl shadow-lg border-[#EC5934] ">
                 <Image src={user} alt="user" />
                 <input
                   className=" rounded-lg bg-transparent outline-none w-full border-none "
@@ -205,7 +205,7 @@ function Page() {
 
             <label className="flex flex-col w-full gap-1" htmlFor="password">
               <span className="text-sm text-gray-500 ">Password</span>
-              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-xl shadow-lg border-[#EC5934] ">
                 <Image src={password} alt="password" />
                 <input
                   className=" rounded-lg bg-transparent outline-none w-full border-none "
@@ -232,7 +232,7 @@ function Page() {
               htmlFor="confirm_password"
             >
               <span className="text-sm text-gray-500 ">Confirm password</span>
-              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-2xl shadow-lg border-[#EC5934] ">
+              <div className="p-3 px-3 w-full flex items-center gap-2 border rounded-xl shadow-lg border-[#EC5934] ">
                 <Image src={password} alt="password" />
                 <input
                   className=" rounded-lg bg-transparent outline-none w-full border-none "
@@ -278,7 +278,7 @@ function Page() {
             <button
               type="submit"
               disabled={!acceptTerms}
-              className="bg-[#EC5934] w-full text-white rounded-2xl px-5 py-4 lg:col-span-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed "
+              className="bg-[#EC5934] w-full text-white rounded-xl px-5 py-4 lg:col-span-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed "
             >
               Continue
             </button>
@@ -295,7 +295,7 @@ function Page() {
             <div>or</div>
             <div className="w-10 h-[1px] bg-[#A4A4A4]"></div>
           </div>
-          <button className="bg-transparent rounded-2xl border border-[#00000066] w-full flex gap-3 px-3 py-4 justify-center items-center shadow-lg ">
+          <button className="bg-transparent rounded-xl border border-[#00000066] w-full flex gap-3 px-3 py-4 justify-center items-center shadow-lg ">
             {" "}
             <Image className="" src={google} alt="google" /> Continue with
             google

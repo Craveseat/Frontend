@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import backarrow from "@/public/Images/backarrowWhite.png";
 import Notification from "@/public/Images/notification1.png";
 import ProfileImg from "@/public/Images/profileIMG.png";
@@ -14,14 +14,34 @@ import FAQ from "@/public/Images/QA.png";
 import Toggle from "@/components/toggle";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { authServices } from "@/utils/api";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
+import { authServices, userProfile } from "@/utils/api";
 // import { signOut, useSession } from "next-auth/react";
 
 const Profile = () => {
   const router = useRouter();
+  const { user, setUserDetails } = useUserDetails();
+  const [loading, setLoading] = useState(false);
+  const [localUser, setLocalUser] = useState(user || null);
   const handleSignOut = () => {
     authServices.logout();
   };
+  useEffect(() => {
+    const getUserProfile = async () => {
+      console.log("loading user", user);
+      try {
+        const res = await userProfile();
+        console.log(res.data);
+        setLocalUser(res.data);
+        // setUserDetails(res.data?.user);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        console.log("user loaded");
+      }
+    };
+    getUserProfile();
+  }, []);
 
   return (
     <div className="bg-[#EAEAEA] h-full ">
@@ -46,7 +66,9 @@ const Profile = () => {
         </div>
         <div className="flex relative flex-col items-center gap-1">
           <Image src={ProfileImg} alt="profileImg" />
-          <p className=" font-medium text-xl text-center ">Adeleye Oreoluwa</p>
+          <p className=" font-medium text-xl text-center ">
+            {localUser?.full_name}
+          </p>
 
           <p>
             <span>128</span> followers &#8226; <span>100</span> following
