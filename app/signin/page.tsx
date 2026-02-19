@@ -44,7 +44,7 @@ function Page() {
   ) => {
     setLoginDetails((prev) => ({
       ...prev,
-      [field]: e.target.value.toLowerCase(),
+      [field]: e.target.value,
     }));
   };
 
