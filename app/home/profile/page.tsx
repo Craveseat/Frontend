@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import backarrow from "@/public/Images/backarrowWhite.png";
 import Notification from "@/public/Images/notification1.png";
 import ProfileImg from "@/public/Images/profileIMG.png";
-import ManageProfile from "@/public/Images/userProfile.png";
+import ManageProfileIcon from "@/public/Images/userProfile.png";
 import Address from "@/public/Images/addresses.png";
 import profileNotif from "@/public/Images/profilNotif.png";
 import proceed from "@/public/Images/profileArr.png";
@@ -16,22 +16,35 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { authServices, userProfile } from "@/utils/api";
+import ManageProfile from "./manage/page";
 // import { signOut, useSession } from "next-auth/react";
 
 const Profile = () => {
   const router = useRouter();
   const { user, setUserDetails } = useUserDetails();
   const [loading, setLoading] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [localUser, setLocalUser] = useState(user || null);
   const handleSignOut = () => {
     authServices.logout();
   };
+
+  const handleCloseProfile = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setShowProfile(false);
+      setIsClosing(false);
+    }, 300);
+  };
+
   useEffect(() => {
     const getUserProfile = async () => {
       console.log("loading user", user);
       try {
         const res = await userProfile();
         console.log(res.data);
+        setUserDetails(res.data);
         setLocalUser(res.data);
         // setUserDetails(res.data?.user);
       } catch (error) {
@@ -46,7 +59,9 @@ const Profile = () => {
   return (
     <div className="bg-[#EAEAEA] h-full ">
       <div className=" px-8 py-8 relative pb-20 w-full flex flex-col gap-8 overflow-clip items-center text-white before:content-[''] before:h-[1500px] before:aspect-square before:absolute before:bottom-0 before:bg-[#EC5934] before:z-0 before:rounded-b-[1500px] ">
-        <div className="flex relative items-center justify-between gap-3  w-full ">
+        <div
+          className={`flex relative items-center justify-between gap-3  w-full transition-opacity duration-300 ease-in-out ${showProfile ? "opacity-0 " : "opacity-100"}`}
+        >
           <button onClick={() => router.back()}>
             <Image src={backarrow} alt="back-btn" />
           </button>
@@ -64,6 +79,7 @@ const Profile = () => {
             </p>
           </div>
         </div>
+
         <div className="flex relative flex-col items-center gap-1">
           <Image src={ProfileImg} alt="profileImg" />
           <p className=" font-medium text-xl text-center ">
@@ -93,15 +109,17 @@ const Profile = () => {
         <div className="bg-white rounded-2xl justify-start flex flex-col gap-5 w-full items-center p-5 ">
           <div className="flex flex-col gap-5 w-full  ">
             <h2 className="font-semibold">My account</h2>
-            <Link
-              href={"/home/profile/manage"}
+            <button
+              onClick={() => setShowProfile(true)}
+              // href={"/home/profile/manage"}
               className="flex justify-between items-center w-full mt-1 "
             >
               <div className="flex text-[#50555C] items-center gap-2">
-                <Image src={ManageProfile} alt="icon" /> <p>Manage Profile</p>
+                <Image src={ManageProfileIcon} alt="icon" />{" "}
+                <p>Manage Profile</p>
               </div>{" "}
               <Image src={proceed} alt="nextarr" />{" "}
-            </Link>
+            </button>
             <div className="flex justify-between items-center w-full ">
               <div className="flex text-[#50555C] items-center gap-2">
                 <Image src={Address} alt="icon" /> <p>Addresses</p>
@@ -157,6 +175,36 @@ const Profile = () => {
           </button>
         </div>
       </div>
+      {showProfile && (
+        <div
+          className="fixed top-0 left-0 right-0 bottom-0 z-50"
+          style={{
+            animation: isClosing
+              ? "slideDown 0.3s ease-in forwards"
+              : "slideUp 0.3s ease-out forwards",
+          }}
+        >
+          <ManageProfile user={localUser} setShowProfile={handleCloseProfile} />
+        </div>
+      )}
+      <style jsx>{`
+        @keyframes slideUp {
+          from {
+            transform: translateY(100%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
+        @keyframes slideDown {
+          from {
+            transform: translateY(0);
+          }
+          to {
+            transform: translateY(100%);
+          }
+        }
+      `}</style>
     </div>
   );
 };

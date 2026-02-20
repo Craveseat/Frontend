@@ -12,6 +12,7 @@ import Phone from "@/components/SVGS/Phone";
 import Location from "@/components/SVGS/Location";
 import Message2 from "@/components/SVGS/Message2";
 import Link from "next/link";
+import { updateProfile } from "@/utils/api";
 
 // Dummy profile data
 const dummyProfile = {
@@ -33,7 +34,13 @@ type EditingField =
   | "delivery_address"
   | null;
 
-const ManageProfile = () => {
+const ManageProfile = ({
+  user,
+  setShowProfile,
+}: {
+  user: any;
+  setShowProfile: () => void;
+}) => {
   const [profile, setProfile] = useState(dummyProfile);
   const [editingField, setEditingField] = useState<EditingField>(null);
   const [editValue, setEditValue] = useState("");
@@ -46,13 +53,22 @@ const ManageProfile = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (editingField) {
-      setProfile((prev) => ({ ...prev, [editingField]: editValue }));
-      setSaveSuccess(editingField);
-      setEditingField(null);
-      setEditValue("");
-      setTimeout(() => setSaveSuccess(null), 2000);
+      try {
+        const res = await updateProfile({
+          [editingField]: editValue,
+        });
+        setProfile((prev) => ({ ...prev, [editingField]: editValue }));
+        setSaveSuccess(editingField);
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setEditingField(null);
+        setEditValue("");
+        setTimeout(() => setSaveSuccess(null), 2000);
+      }
     }
   };
 
@@ -71,15 +87,15 @@ const ManageProfile = () => {
   };
 
   return (
-    <div className="bg-[#EC5934] pt-20 min-h-screen">
+    <div className="bg-transparent pt-12 min-h-screen">
       <div className="bg-white rounded-t-[30px] pt-9 px-7 flex flex-col items-center w-full gap-5 pb-10 min-h-[calc(100vh-80px)]">
         {/* Header */}
         <div className="flex items-center w-full justify-between px-4 py-3">
           <div className="w-6"></div>
           <p className="font-semibold text-lg">Manage Profile</p>
-          <Link href="/home/profile">
+          <button onClick={() => setShowProfile()}>
             <Close />
-          </Link>
+          </button>
         </div>
 
         {/* Profile Image */}
@@ -88,7 +104,7 @@ const ManageProfile = () => {
             <Image
               width={120}
               height={120}
-              src={ProfileImg}
+              src={user?.profile_picture || ProfileImg}
               alt="manage-profile"
               className="rounded-full object-cover"
             />
@@ -109,8 +125,12 @@ const ManageProfile = () => {
             </button>
           </div>
           <div className="text-center">
-            <p className="font-semibold text-lg">{profile.full_name}</p>
-            <p className="text-[#898A8D] text-sm">@{profile.username}</p>
+            <p className="font-semibold text-lg">
+              {user?.full_name || profile.full_name}
+            </p>
+            <p className="text-[#898A8D] text-sm">
+              @{user?.username || profile.username}
+            </p>
           </div>
         </div>
 

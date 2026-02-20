@@ -120,4 +120,20 @@ export const userProfile = async () => {
   }
 };
 
+export const updateProfile = async (data: any) => {
+  try {
+    console.log(data);
+    const res = await API.patch("/profile", data);
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred",
+      );
+    }
+    throw new Error("An unknown error occurred");
+  }
+};
+
 // export default api;
