@@ -7,23 +7,26 @@ import Image from "next/image";
 import Edit from "@/components/SVGS/Edit";
 import User from "@/components/SVGS/User";
 import Bio from "@/components/SVGS/Bio";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
 import Padlock from "@/components/SVGS/Padlock";
 import Phone from "@/components/SVGS/Phone";
 import Location from "@/components/SVGS/Location";
 import Message2 from "@/components/SVGS/Message2";
 import Link from "next/link";
 import { updateProfile } from "@/utils/api";
+import { LoginUserDetails } from "@/utils/types";
+import { Spinner } from "@/components/Loader";
 
 // Dummy profile data
-const dummyProfile = {
-  username: "Pauleye12",
-  full_name: "Paul Ogunmepon",
-  email: "pauleye.ogunmepon75@gmail.com",
-  phone_number: "+234 812 345 6789",
-  bio: "Food lover & home chef 🍳 Always on the hunt for the best local flavors.",
-  delivery_address: "12 Marina Road, Lagos Island, Lagos",
-  password: "••••••••",
-};
+// const dummyProfile = {
+//   username: "Pauleye12",
+//   full_name: "Paul Ogunmepon",
+//   email: "pauleye.ogunmepon75@gmail.com",
+//   phone_number: "+234 812 345 6789",
+//   bio: "Food lover & home chef 🍳 Always on the hunt for the best local flavors.",
+//   delivery_address: "12 Marina Road, Lagos Island, Lagos",
+//   password: "••••••••",
+// };
 
 type EditingField =
   | "username"
@@ -34,37 +37,36 @@ type EditingField =
   | "delivery_address"
   | null;
 
-const ManageProfile = ({
-  user,
-  setShowProfile,
-}: {
-  user: any;
-  setShowProfile: () => void;
-}) => {
-  const [profile, setProfile] = useState(dummyProfile);
+const ManageProfile = ({ setShowProfile }: { setShowProfile: () => void }) => {
+  const { user, setUserDetails } = useUserDetails();
+  const [profile, setProfile] = useState(user);
   const [editingField, setEditingField] = useState<EditingField>(null);
   const [editValue, setEditValue] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
 
   const handleEdit = (field: EditingField) => {
-    if (field) {
+    if (field && profile) {
       setEditValue(profile[field]);
       setEditingField(field);
     }
   };
 
   const handleSave = async () => {
-    if (editingField) {
+    if (editingField && profile) {
       try {
+        setIsUpdating(true);
         const res = await updateProfile({
           [editingField]: editValue,
         });
-        setProfile((prev) => ({ ...prev, [editingField]: editValue }));
+        console.log(res);
+        setUserDetails(res.data);
         setSaveSuccess(editingField);
         console.log(res);
       } catch (error) {
         console.log(error);
       } finally {
+        setIsUpdating(false);
         setEditingField(null);
         setEditValue("");
         setTimeout(() => setSaveSuccess(null), 2000);
@@ -104,8 +106,8 @@ const ManageProfile = ({
             <Image
               width={120}
               height={120}
-              src={user?.profile_picture || ProfileImg}
-              alt="manage-profile"
+              src={user?.image_url || ProfileImg}
+              alt="profile-image"
               className="rounded-full object-cover"
             />
             <button className="absolute bottom-1 right-1 bg-[#EC5934] rounded-full p-[6px] shadow-md hover:bg-[#d94e2e] transition-colors">
@@ -125,12 +127,8 @@ const ManageProfile = ({
             </button>
           </div>
           <div className="text-center">
-            <p className="font-semibold text-lg">
-              {user?.full_name || profile.full_name}
-            </p>
-            <p className="text-[#898A8D] text-sm">
-              @{user?.username || profile.username}
-            </p>
+            <p className="font-semibold text-lg">{user?.full_name || ""}</p>
+            <p className="text-[#898A8D] text-sm">@{user?.username || ""}</p>
           </div>
         </div>
 
@@ -179,9 +177,10 @@ const ManageProfile = ({
                 </button>
                 <button
                   onClick={handleSave}
-                  className="flex-1 py-3 rounded-full bg-[#EC5934] text-white font-medium text-sm hover:bg-[#d94e2e] transition-colors"
+                  disabled={isUpdating}
+                  className="flex-1 py-3 rounded-full bg-[#EC5934] text-white font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#d94e2e] transition-colors   disabled:cursor-not-allowed "
                 >
-                  Save
+                  {isUpdating ? <Spinner /> : "Save"}
                 </button>
               </div>
             </div>
@@ -194,8 +193,8 @@ const ManageProfile = ({
           <ProfileField
             icon={<User />}
             label="Username"
-            value={profile.username}
-            onEdit={() => handleEdit("username")}
+            value={user?.username || ""}
+            // onEdit={() => handleEdit("username")}
             showSuccess={saveSuccess === "username"}
           />
 
@@ -203,7 +202,7 @@ const ManageProfile = ({
           <ProfileField
             icon={<User />}
             label="Full Name"
-            value={profile.full_name}
+            value={user?.full_name || ""}
             onEdit={() => handleEdit("full_name")}
             showSuccess={saveSuccess === "full_name"}
           />
@@ -212,26 +211,26 @@ const ManageProfile = ({
           <ProfileField
             icon={<Bio />}
             label="Bio"
-            value={profile.bio}
+            value={user?.bio || ""}
             onEdit={() => handleEdit("bio")}
             showSuccess={saveSuccess === "bio"}
           />
 
           {/* Password */}
-          <ProfileField
+          {/* <ProfileField
             icon={<Padlock />}
             label="Password"
             value={dummyProfile.password}
             onEdit={() => {}}
             actionLabel="Change"
-          />
+          /> */}
 
           {/* Email */}
           <ProfileField
             icon={<Message2 />}
             label="Email"
-            value={profile.email}
-            onEdit={() => handleEdit("email")}
+            value={user?.email || ""}
+            // onEdit={() => handleEdit("email")}
             showSuccess={saveSuccess === "email"}
           />
 
@@ -239,7 +238,7 @@ const ManageProfile = ({
           <ProfileField
             icon={<Phone />}
             label="Phone Number"
-            value={profile.phone_number}
+            value={profile?.phone_number || ""}
             onEdit={() => handleEdit("phone_number")}
             showSuccess={saveSuccess === "phone_number"}
           />
@@ -248,7 +247,7 @@ const ManageProfile = ({
           <ProfileField
             icon={<Location />}
             label="Delivery Address"
-            value={profile.delivery_address}
+            value={user?.delivery_address || ""}
             onEdit={() => handleEdit("delivery_address")}
             showSuccess={saveSuccess === "delivery_address"}
           />
@@ -285,7 +284,7 @@ const ProfileField = ({
   icon: React.ReactNode;
   label: string;
   value: string;
-  onEdit: () => void;
+  onEdit?: () => void;
   showSuccess?: boolean;
   actionLabel?: string;
 }) => {
@@ -296,22 +295,24 @@ const ProfileField = ({
         <p className="text-xs text-[#898A8D] mb-[2px]">{label}</p>
         <p className="text-sm text-[#1A1A1A] break-words">{value}</p>
       </div>
-      <button
-        onClick={onEdit}
-        className="flex-shrink-0 flex items-center gap-1 mt-1"
-      >
-        {showSuccess ? (
-          <span className="text-green-500 text-xs font-medium animate-pulse">
-            ✓ Saved
-          </span>
-        ) : actionLabel ? (
-          <span className="text-[#EC5934] text-xs font-medium">
-            {actionLabel}
-          </span>
-        ) : (
-          <Edit />
-        )}
-      </button>
+      {onEdit && (
+        <button
+          onClick={onEdit}
+          className="flex-shrink-0 flex items-center gap-1 mt-1"
+        >
+          {showSuccess ? (
+            <span className="text-green-500 text-xs font-medium animate-pulse">
+              ✓ Saved
+            </span>
+          ) : actionLabel ? (
+            <span className="text-[#EC5934] text-xs font-medium">
+              {actionLabel}
+            </span>
+          ) : (
+            <Edit />
+          )}
+        </button>
+      )}
     </div>
   );
 };

@@ -2,11 +2,7 @@
 
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import Location from "@/public/Images/location.png";
-import Downarrow from "@/public/Images/downarrow.png";
-import Notification from "@/public/Images/notification.png";
-import Search from "@/public/Images/search.png";
-import Filter from "@/public/Images/filter.png";
+
 import Supermarket from "@/public/Images/shopping.png";
 import Resturant from "@/public/Images/resturant.png";
 import Pharmacy from "@/public/Images/pharmacy2.png";
@@ -21,46 +17,53 @@ import Craving1 from "@/public/Images/craving1.png";
 import Craving2 from "@/public/Images/craving2.png";
 import Craving3 from "@/public/Images/craving3.png";
 import Link from "next/link";
-import { authServices } from "@/utils/api";
+
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { useRouter } from "next/navigation";
+import {
+  Bell,
+  ChevronDown,
+  MapPin,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
 // import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 // import { useSession } from "next-auth/react";
 // import Footer from "@/components/footer";
 
 const section = [
   {
-    image: Resturant,
+    image: "resturant",
     text: "Restaurants",
     bgColor:
       "flex flex-col items-center gap-1 max-w-[110px] w-full px-2 py-2 rounded-xl bg-[#F8DCE5]",
   },
   {
-    image: Supermarket,
+    image: "shopping",
     text: "Supermarket",
     bgColor:
       "flex flex-col items-center gap-1 max-w-[110px] w-full px-2 py-2 rounded-xl bg-[#FEF3EF]",
   },
   {
-    image: Pharmacy,
+    image: "pharmacy2",
     text: "Pharmacy",
     bgColor:
       "flex flex-col items-center gap-1 max-w-[110px] w-full px-2 py-2 rounded-xl bg-[#EDF3FF]",
   },
   {
-    image: LocalMarket,
+    image: "localMarket",
     text: "Local Market",
     bgColor:
       "flex flex-col items-center gap-1 max-w-[110px] w-full px-2 py-2 rounded-xl bg-[#E5FAF3]",
   },
   {
-    image: Resturant,
+    image: "resturant",
     text: "Mall",
     bgColor:
       "flex flex-col items-center gap-1 max-w-[110px] w-full px-2 py-2 rounded-xl bg-[#FFC9DD]",
   },
   {
-    image: Resturant,
+    image: "resturant",
     text: "More",
     bgColor:
       "flex flex-col items-center gap-1 max-w-[110px] w-full px-2 py-2 rounded-xl bg-[#F5FAFE]",
@@ -490,7 +493,7 @@ function Page() {
                 </span>{" "}
               </h1>
               <div className="flex items-center gap-2 ">
-                <Image src={Location} alt="location" />
+                <MapPin color="#fff" size={16} />
                 <p className="text-[11px] font-normal text-white ">
                   {user?.delivery_address ? (
                     user.delivery_address
@@ -498,16 +501,16 @@ function Page() {
                     <Link href="profile">Add delivery address</Link>
                   )}
                 </p>
-                <Image src={Downarrow} alt="Dropdown" />
+                <ChevronDown color="#fff" />
               </div>
             </div>
             <div>
-              <Image src={Notification} alt="notification" />
+              <Bell color="#fff" />
               <div className="absolute rounded-full "></div>
             </div>
           </div>
           <div className="w-full bg-white rounded-xl flex gap-2 items-center h-[40px] px-6 py-2 ">
-            <Image src={Search} alt="search" />
+            <Search color="#A4A4A4" />
             <input
               className="outline-none bg-transparent h-full px-2 w-full font-medium   "
               type="text"
@@ -515,13 +518,13 @@ function Page() {
               id="search"
               placeholder="Search"
             />
-            <Image src={Filter} alt="filter" />
+            <SlidersHorizontal color="#EC5934" />
           </div>
           <div className="flex mt-5 justify-center items-center gap-3 flex-wrap ">
             {section.map((e, index) => (
               <div className={e.bgColor} key={index}>
-                <Image src={e.image} alt="sectionImg" />
-                <p className="text-[#000000] font-medium text-sm ">{e.text}</p>
+                <img src={`./images/${e.image}.png`} alt="sectionImg" />
+                <p className="text-[#000000] text-xs ">{e.text}</p>
               </div>
             ))}
           </div>

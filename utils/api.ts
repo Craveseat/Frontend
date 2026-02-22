@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { SignUpDetails, LoginDetails } from "./types";
 
 const API = axios.create({
-  baseURL: "https://craveseat-api.onrender.com",
+  baseURL: "https://craveseat-api-rebh.onrender.com",
   headers: {
     "Content-Type": "application/json",
   },

@@ -83,7 +83,7 @@ function Page() {
       className={`w-screen min-h-screen-vh p-10 px-7 bg-[#EAEAEA] flex flex-col lg:flex-row-reverse justify-center items-center gap-6 ${montserrat.className}  `}
     >
       <div className="mt-10  w-full flex flex-col justify-center items-center gap-20 ">
-        <Image src={logo} alt="craveseatLogo" width={220} height={180} />
+        <Image src={logo} alt="craveseatLogo" width={190} height={180} />
         <p className="hidden max-w-[500px] w-full text-center lg:block text-lg  ">
           Share your cravings with our vibrant community, and let the satisfiers
           work their magic. Every craving is an opportunity to connect, inspire,
@@ -104,10 +104,10 @@ function Page() {
           >
             <label className="flex flex-col w-full gap-1" htmlFor="username">
               <span className="text-sm text-gray-500 ">Username/Email</span>
-              <div className="p-3 w-full flex items-center gap-2 border rounded-xl shadow-lg border-[#EC5934] ">
+              <div className="p-3 w-full flex items-center gap-2 border rounded-lg shadow-lg border-[#EC5934] ">
                 <UserRound size={24} />
                 <input
-                  className=" rounded-lg bg-transparent outline-none w-full border-none "
+                  className=" rounded-md bg-transparent outline-none w-full text-sm border-none "
                   type="text"
                   name="email_or_username"
                   placeholder="username/email"
@@ -120,10 +120,10 @@ function Page() {
 
             <label className="flex flex-col w-full gap-1" htmlFor="password">
               <span className="text-sm text-gray-500 ">Password</span>
-              <div className="p-3 w-full flex items-center gap-2 border rounded-xl shadow-lg border-[#EC5934] ">
+              <div className="p-3 w-full flex items-center gap-2 border rounded-lg shadow-lg border-[#EC5934] ">
                 <Image src={password} alt="password" />
                 <input
-                  className=" rounded-lg bg-transparent outline-none w-full border-none "
+                  className=" rounded-md bg-transparent outline-none w-full text-sm border-none "
                   type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="password"
