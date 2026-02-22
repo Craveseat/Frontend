@@ -7,6 +7,7 @@ import { SessionContext, SessionProvider } from "next-auth/react";
 import { authOptions } from "@/utils/auth";
 import AuthProvider from "@/utils/sessionProvider";
 import { UserDetailsProvider } from "@/contexts/UserDetailsContext";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,7 +31,10 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider session={session}>
-          <UserDetailsProvider>{children}</UserDetailsProvider>
+          <UserDetailsProvider>
+            {children}
+            <SpeedInsights />
+          </UserDetailsProvider>
         </AuthProvider>
       </body>
     </html>
