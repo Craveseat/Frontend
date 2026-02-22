@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUserDetails } from "@/contexts/UserDetailsContext";
 import { authServices, userProfile } from "@/utils/api";
-import ManageProfile from "./manage/page";
+import ManageProfile from "@/components/ManageProfile";
 import { Bell, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   BellOrangeIcon,
