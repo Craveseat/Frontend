@@ -523,7 +523,7 @@ function Page() {
           <div className="flex mt-5 justify-center items-center gap-3 flex-wrap ">
             {section.map((e, index) => (
               <div className={e.bgColor} key={index}>
-                <img src={`/images/${e.image}.png`} alt="sectionImg" />
+                <img src={`/Images/${e.image}.png`} alt="sectionImg" />
                 <p className="text-[#000000] text-xs ">{e.text}</p>
               </div>
             ))}
