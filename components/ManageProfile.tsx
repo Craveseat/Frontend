@@ -1,7 +1,7 @@
 "use client";
 
 import Close from "@/components/SVGS/Close";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import ProfileImg from "@/public/Images/profileIMG.png";
 import Image from "next/image";
 import Edit from "@/components/SVGS/Edit";
@@ -13,7 +13,7 @@ import Phone from "@/components/SVGS/Phone";
 import Location from "@/components/SVGS/Location";
 import Message2 from "@/components/SVGS/Message2";
 import Link from "next/link";
-import { updateProfile } from "@/utils/api";
+import { updateProfile, updateProfilePicture } from "@/utils/api";
 import { LoginUserDetails } from "@/utils/types";
 import { Spinner } from "@/components/Loader";
 
@@ -44,6 +44,57 @@ const ManageProfile = ({ setShowProfile }: { setShowProfile: () => void }) => {
   const [editValue, setEditValue] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
+  const [isUploadingPicture, setIsUploadingPicture] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [errMsg, setErrMsg] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleProfilePictureChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Create a local preview URL
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
+    setSelectedFile(file);
+
+    // Reset input so the same file can be re-selected if needed
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const confirmUpload = async () => {
+    if (!selectedFile) return;
+
+    try {
+      setIsUploadingPicture(true);
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      const res = await updateProfilePicture(formData);
+      console.log(res);
+      setUserDetails(res.data);
+      setUploadSuccess(true);
+      setTimeout(() => setUploadSuccess(false), 2000);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsUploadingPicture(false);
+      cancelPreview();
+    }
+  };
+
+  const cancelPreview = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setPreviewUrl(null);
+    setSelectedFile(null);
+  };
 
   const handleEdit = (field: EditingField) => {
     if (field && profile) {
@@ -55,6 +106,7 @@ const ManageProfile = ({ setShowProfile }: { setShowProfile: () => void }) => {
   const handleSave = async () => {
     if (editingField && profile) {
       try {
+        setErrMsg(null);
         setIsUpdating(true);
         const res = await updateProfile({
           [editingField]: editValue,
@@ -62,13 +114,17 @@ const ManageProfile = ({ setShowProfile }: { setShowProfile: () => void }) => {
         console.log(res);
         setUserDetails(res.data);
         setSaveSuccess(editingField);
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsUpdating(false);
+
         setEditingField(null);
         setEditValue("");
+        console.log(res);
+      } catch (error: unknown) {
+        console.log(error);
+        setErrMsg(
+          error instanceof Error ? error.message : "An unknown error occurred",
+        );
+      } finally {
+        setIsUpdating(false);
         setTimeout(() => setSaveSuccess(null), 2000);
       }
     }
@@ -90,7 +146,7 @@ const ManageProfile = ({ setShowProfile }: { setShowProfile: () => void }) => {
 
   return (
     <div className="bg-transparent pt-12 min-h-screen">
-      <div className="bg-white rounded-t-[30px] pt-9 px-7 flex flex-col items-center w-full gap-5 pb-10 min-h-[calc(100vh-80px)]">
+      <div className="bg-white rounded-t-[30px] pt-9 px-7 flex flex-col items-center w-full gap-5 pb-10 min-h-[calc(100vh-20px)]">
         {/* Header */}
         <div className="flex items-center w-full justify-between px-4 py-3">
           <div className="w-6"></div>
@@ -103,29 +159,81 @@ const ManageProfile = ({ setShowProfile }: { setShowProfile: () => void }) => {
         {/* Profile Image */}
         <div className="w-full flex flex-col justify-center items-center gap-3 relative">
           <div className="relative">
-            <Image
-              width={120}
-              height={120}
-              src={user?.image_url || ProfileImg}
-              alt="profile-image"
-              className="rounded-full object-cover"
+            {previewUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                width={120}
+                height={120}
+                src={previewUrl}
+                alt="preview"
+                className="rounded-full aspect-square object-cover"
+              />
+            ) : (
+              <Image
+                width={120}
+                height={120}
+                src={user?.image_url || ProfileImg}
+                alt="profile-image"
+                className="rounded-full aspect-square object-cover"
+              />
+            )}
+            {/* Hidden file input for profile picture upload */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleProfilePictureChange}
+              accept="image/*"
+              className="hidden"
             />
-            <button className="absolute bottom-1 right-1 bg-[#EC5934] rounded-full p-[6px] shadow-md hover:bg-[#d94e2e] transition-colors">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+            {!previewUrl && (
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploadingPicture}
+                className="absolute bottom-1 right-1 bg-[#EC5934] rounded-full p-[6px] shadow-md hover:bg-[#d94e2e] transition-colors disabled:opacity-60"
               >
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                <circle cx="12" cy="13" r="4" />
-              </svg>
-            </button>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                  <circle cx="12" cy="13" r="4" />
+                </svg>
+              </button>
+            )}
           </div>
+
+          {/* Preview confirm/cancel buttons */}
+          {previewUrl && (
+            <div className="flex gap-3 mt-1">
+              <button
+                onClick={cancelPreview}
+                disabled={isUploadingPicture}
+                className="py-2 px-5 rounded-full border border-[#E0E0E0] text-[#50555C] font-medium text-sm hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmUpload}
+                disabled={isUploadingPicture}
+                className="py-2 px-5 rounded-full bg-[#EC5934] text-white font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#d94e2e] transition-colors disabled:opacity-60"
+              >
+                {isUploadingPicture ? <Spinner /> : "Upload"}
+              </button>
+            </div>
+          )}
+
+          {uploadSuccess && (
+            <span className="text-green-500 text-sm font-medium animate-pulse">
+              ✓ Profile picture updated!
+            </span>
+          )}
+
           <div className="text-center">
             <p className="font-semibold text-lg">{user?.full_name || ""}</p>
             <p className="text-[#898A8D] text-sm">@{user?.username || ""}</p>
@@ -167,6 +275,8 @@ const ManageProfile = ({ setShowProfile }: { setShowProfile: () => void }) => {
                   autoFocus
                 />
               )}
+
+              {errMsg && <p className="text-red-500 text-xs ">{errMsg}</p>}
 
               <div className="flex gap-3 mt-5">
                 <button

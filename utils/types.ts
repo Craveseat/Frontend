@@ -27,3 +27,20 @@ export type LoginUserDetails = {
   created_at: string;
   updated_at: string;
 };
+
+export type Cravings = {
+  name: string;
+  category: string;
+  description: string;
+  price_estimate: string;
+  delivery_address: string;
+  recommended_vendor: string;
+  vendor_link: string;
+  notes: string;
+  image_url: string;
+};
+
+export type CravingCategory = {
+  id: string;
+  name: string;
+};

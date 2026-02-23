@@ -20,7 +20,7 @@ const Page = () => {
           <p className="text-[#898A8D]">You have no current cravings</p>
         </div>
         <Link
-          className="py-3 px-2 bg-[#EC5934] text-center w-full text-white font-semibold text-xl rounded-lg"
+          className="py-2 px-2 bg-[#EC5934] text-center w-full text-white rounded-md"
           href={"/home/newCraving"}
         >
           Add new craving

@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: any }) => {
         <div>
           <div className="flex justify-end">
             <Link
-              className="px-8 py-5 font-semibold text-sm "
+              className="px-8 py-5 text-sm text-[#EC5934] "
               href={"/home/newCraving"}
             >
               Add new
@@ -26,8 +26,8 @@ const Layout = ({ children }: { children: any }) => {
               onClick={() => setCravingStatus("active")}
               className={
                 cravingStatus.toLowerCase() == "active"
-                  ? " px-6 py-1 h-full max-w-[170px] w-full flex justify-center items-center   bg-black text-white rounded-3xl "
-                  : " px-6 py-1 h-full max-w-[170px] w-full flex justify-center items-center   bg-transparent "
+                  ? " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-black text-white rounded-3xl "
+                  : " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-transparent "
               }
               href={"/home/cravings"}
             >
@@ -37,8 +37,8 @@ const Layout = ({ children }: { children: any }) => {
               onClick={() => setCravingStatus("satisfied")}
               className={
                 cravingStatus.toLowerCase() == "satisfied"
-                  ? " px-6 py-1 h-full max-w-[170px] w-full flex justify-center items-center   bg-black text-white rounded-3xl "
-                  : " px-6 py-1 h-full max-w-[170px] w-full flex justify-center items-center   bg-transparent "
+                  ? " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-black text-white rounded-3xl "
+                  : " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-transparent "
               }
               href={"/home/cravings/satisfied"}
             >

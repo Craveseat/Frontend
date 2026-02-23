@@ -84,7 +84,13 @@ const Profile = () => {
         </div>
 
         <div className="flex relative flex-col items-center gap-1">
-          <Image src={ProfileImg} alt="profileImg" />
+          <Image
+            width={120}
+            height={120}
+            className="rounded-full aspect-square object-cover "
+            src={user?.image_url || ProfileImg}
+            alt="profileImg"
+          />
           <p className=" font-medium text-lg text-center ">{user?.full_name}</p>
 
           <p className="text-sm">

@@ -136,4 +136,55 @@ export const updateProfile = async (data: any) => {
   }
 };
 
+export const updateProfilePicture = async (data: any) => {
+  try {
+    console.log(data);
+    const res = await API.post("/profile/upload-image", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred",
+      );
+    }
+    throw new Error("An unknown error occurred");
+  }
+};
+
+export const cravingCategories = async () => {
+  try {
+    const res = await API.get("/cravings/categories");
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred",
+      );
+    }
+    throw new Error("An unknown error occurred");
+  }
+};
+
+export const uploadCravings = async (data: any) => {
+  try {
+    console.log(data);
+    const res = await API.post("/cravings", data);
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred",
+      );
+    }
+    throw new Error("An unknown error occurred");
+  }
+};
+
 // export default api;
