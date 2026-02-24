@@ -2,6 +2,7 @@
 import Headers from "@/components/headers";
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import uploadImg1 from "@/public/Images/uploadImg1.png";
 import uploadImg2 from "@/public/Images/uploadImg2.png";
 import dropdown from "@/public/Images/dropdown.png";
@@ -32,6 +33,7 @@ const Page = () => {
     notes: "",
     image_url: "",
   });
+  const router = useRouter();
 
   const [categories, setCategories] = useState<CravingCategory[]>([]);
 
@@ -89,6 +91,9 @@ const Page = () => {
       console.log(cravings);
       await uploadCravings(cravings);
       setSuccessMsg("Your Cravings has been uploaded successfully");
+      setTimeout(() => {
+        router.push("/home/cravings");
+      }, 2000);
     } catch (error: unknown) {
       setErrMsg(error as string);
       console.log(error);

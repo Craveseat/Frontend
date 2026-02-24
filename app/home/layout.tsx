@@ -14,7 +14,7 @@ const Layout = ({ children }: { children: any }) => {
     redirect("/signin");
   }
   return (
-    <div className=" min-h-screen-vh h-full pb-[70px]  ">
+    <div className=" min-h-screen-vh h-full bg-[#EAEAEA]  ">
       {children}
       <Footer />
     </div>

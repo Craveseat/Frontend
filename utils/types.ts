@@ -44,3 +44,22 @@ export type CravingCategory = {
   id: string;
   name: string;
 };
+
+export type CravingCardType = {
+  name: string;
+  description: string;
+  category: string;
+  price_estimate: string;
+  delivery_address: string;
+  recommended_vendor: string;
+  vendor_link: string;
+  notes: string;
+  id: string;
+  user_id: string;
+  status: string;
+  image_url: string;
+  share_token: string;
+  created_at: string;
+  updated_at: string;
+  fulfilled_at: string | null;
+};

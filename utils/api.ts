@@ -187,4 +187,25 @@ export const uploadCravings = async (data: any) => {
   }
 };
 
+export const getUserCravings = async (
+  limit: number,
+  status?: string,
+  category: string = "",
+) => {
+  try {
+    const res = await API.get(
+      `/cravings?limit=${limit}&status=${status}&category=${category}`,
+    );
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred",
+      );
+    }
+    throw new Error("An unknown error occurred");
+  }
+};
+
 // export default api;
