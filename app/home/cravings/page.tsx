@@ -37,48 +37,44 @@ const Page = () => {
   }, [cravingStatus]);
   return (
     <div className={` min-h-screen-vh h-full bg-[#EAEAEA]  `}>
-      <div className="px-7">
+      <div className="px-7 ">
         <Headers text="Cravings" />
-        <div>
-          <div className="flex justify-end">
-            <Link
-              className="px-8 py-5 text-sm text-[#EC5934] "
-              href={"/home/newCraving"}
-            >
-              Add new
-            </Link>
-          </div>
-          <div className="w-full flex justify-between items-center rounded-3xl bg-[#E1E2E3] relative ">
-            <button
-              onClick={() => setCravingStatus("open")}
-              className={
-                cravingStatus.toLowerCase() == "open"
-                  ? " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-black text-white rounded-3xl "
-                  : " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-transparent "
-              }
-            >
-              Active Cravings
-            </button>
-            <button
-              onClick={() => setCravingStatus("close")}
-              className={
-                cravingStatus.toLowerCase() == "close"
-                  ? " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-black text-white rounded-3xl "
-                  : " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-transparent "
-              }
-            >
-              Satisfied
-            </button>
-            {/* <div className="bg-black hidden py-3 text-white absolute w-[50%] text-center rounded-3xl h-full ">
-                  {page}
-                </div> */}
-          </div>
+        <div className="w-full mt-8 flex justify-between items-center rounded-3xl bg-[#E1E2E3] relative ">
+          <button
+            onClick={() => setCravingStatus("open")}
+            className={
+              cravingStatus.toLowerCase() == "open"
+                ? " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-[#EC5934] text-white rounded-3xl "
+                : " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-transparent "
+            }
+          >
+            Active Cravings
+          </button>
+          <button
+            onClick={() => setCravingStatus("close")}
+            className={
+              cravingStatus.toLowerCase() == "close"
+                ? " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-[#EC5934] text-white rounded-3xl "
+                : " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-transparent "
+            }
+          >
+            Satisfied
+          </button>
         </div>
       </div>
-      <div className="grid place-items-center h-full w-full py-10 pb-[80px] px-7 ">
-        <p className="text-sm w-full -mt-8  text-[#898A8D] font-medium ">
-          {cravings.length} item{cravings.length === 1 ? "" : "s"}
-        </p>
+      <div className="grid place-items-center h-full w-full py-6  pb-[80px] px-7 ">
+        <div className="flex justify-between w-full items-center">
+          <p className="text-sm  text-[#898A8D] font-medium ">
+            {cravings.length} item{cravings.length === 1 ? "" : "s"}
+          </p>
+          <Link
+            className="px-4 py-2 text-sm bg-[#EC5934] text-white rounded-md "
+            href={"/home/newCraving"}
+          >
+            + Add new
+          </Link>
+        </div>
+
         {cravingsLoading ? (
           <PageLoader fullScreen={false} message="Loading cravings" />
         ) : cravings.length === 0 ? (

@@ -13,7 +13,7 @@ const CravingCard = ({ craving }: { craving: CravingCardType }) => {
       {/* Image */}
       <div className="w-full">
         <Image
-          className="w-full object-cover"
+          className="w-full aspect-video object-cover"
           width={400}
           height={160}
           src={craving?.image_url || CravingPlaceholder}
@@ -22,7 +22,7 @@ const CravingCard = ({ craving }: { craving: CravingCardType }) => {
       </div>
 
       {/* Card Content */}
-      <div className="flex flex-col gap-3 px-4 py-4">
+      <div className="flex flex-col gap-2 px-4 py-4">
         {/* Header: Name, Price & Actions */}
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-[2px]">
