@@ -1,18 +1,28 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Footer from "@/components/footer";
-
 import UseViewPortHeight from "@/utils/UseViewPortHeight";
-
-import { redirect } from "next/navigation";
 import { authServices } from "@/utils/api";
+import { PageLoader } from "@/components/Loader";
 
 const Layout = ({ children }: { children: any }) => {
   UseViewPortHeight();
+  const router = useRouter();
+  const [isChecking, setIsChecking] = useState(true);
 
-  if (!authServices.getAccessToken()) {
-    redirect("/signin");
+  useEffect(() => {
+    if (!authServices.getAccessToken()) {
+      router.replace("/signin");
+    } else {
+      setIsChecking(false);
+    }
+  }, [router]);
+
+  if (isChecking) {
+    return <PageLoader fullScreen={true} message="Getting Cravings..." />;
   }
+
   return (
     <div className=" min-h-screen-vh h-full bg-[#EAEAEA]  ">
       {children}

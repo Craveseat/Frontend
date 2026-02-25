@@ -49,28 +49,26 @@ const Page = () => {
             </Link>
           </div>
           <div className="w-full flex justify-between items-center rounded-3xl bg-[#E1E2E3] relative ">
-            <Link
+            <button
               onClick={() => setCravingStatus("open")}
               className={
                 cravingStatus.toLowerCase() == "open"
                   ? " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-black text-white rounded-3xl "
                   : " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-transparent "
               }
-              href={"/home/cravings"}
             >
               Active Cravings
-            </Link>
-            <Link
+            </button>
+            <button
               onClick={() => setCravingStatus("close")}
               className={
                 cravingStatus.toLowerCase() == "close"
                   ? " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-black text-white rounded-3xl "
                   : " px-6 py-1 h-full max-w-[170px] text-sm w-full flex justify-center items-center   bg-transparent "
               }
-              href={"/home/cravings/satisfied"}
             >
               Satisfied
-            </Link>
+            </button>
             {/* <div className="bg-black hidden py-3 text-white absolute w-[50%] text-center rounded-3xl h-full ">
                   {page}
                 </div> */}
@@ -79,12 +77,12 @@ const Page = () => {
       </div>
       <div className="grid place-items-center h-full w-full py-10 pb-[80px] px-7 ">
         <p className="text-sm w-full -mt-8  text-[#898A8D] font-medium ">
-          {cravings.length} items
+          {cravings.length} item{cravings.length === 1 ? "" : "s"}
         </p>
         {cravingsLoading ? (
           <PageLoader fullScreen={false} message="Loading cravings" />
         ) : cravings.length === 0 ? (
-          <div className="max-w-[300px] text-center w-full flex flex-col gap-14  ">
+          <div className="max-w-[300px] mt-10 text-center w-full flex flex-col gap-14  ">
             <div className="flex flex-col gap-6 items-center ">
               <div className="flex items-center">
                 <Image src={Phone} alt="phone" />
@@ -104,7 +102,7 @@ const Page = () => {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center ">
+          <div className="grid grid-cols-1 mt-5 md:grid-cols-2 gap-4 justify-center ">
             {cravings.map((craving: CravingCardType) => (
               <CravingCard key={craving.id} craving={craving} />
             ))}

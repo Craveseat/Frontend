@@ -208,4 +208,23 @@ export const getUserCravings = async (
   }
 };
 
+export const uploadImageCloudinary = async (data: any) => {
+  try {
+    const res = await API.post("/cravings/upload-image", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    // console.log(res.data);
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred",
+      );
+    }
+    throw new Error("An unknown error occurred");
+  }
+};
+
 // export default api;

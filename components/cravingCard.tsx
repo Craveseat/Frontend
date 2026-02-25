@@ -16,7 +16,7 @@ const CravingCard = ({ craving }: { craving: CravingCardType }) => {
           className="w-full object-cover"
           width={400}
           height={160}
-          src={CravingPlaceholder}
+          src={craving?.image_url || CravingPlaceholder}
           alt={craving.name}
         />
       </div>
@@ -30,7 +30,7 @@ const CravingCard = ({ craving }: { craving: CravingCardType }) => {
               {craving.name}
             </h2>
             <span className="text-[11px] text-[#898A8D] font-medium">
-              ₦ {craving.price_estimate}
+              ₦ {craving?.price_estimate}
             </span>
           </div>
           <div className="flex gap-2 items-center pt-[2px]">
@@ -40,14 +40,14 @@ const CravingCard = ({ craving }: { craving: CravingCardType }) => {
         </div>
 
         {/* Description */}
-        {craving.description && (
+        {craving?.description && (
           <p className="text-[11px] text-[#6B6B6B] leading-relaxed line-clamp-2">
             {craving.description}
           </p>
         )}
 
         {/* Vendor Info */}
-        {craving.recommended_vendor && (
+        {craving?.recommended_vendor && (
           <>
             <hr className="border-[#E0E0E0]" />
             <div className="flex flex-col gap-1">

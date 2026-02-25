@@ -7,9 +7,14 @@ import uploadImg1 from "@/public/Images/uploadImg1.png";
 import uploadImg2 from "@/public/Images/uploadImg2.png";
 import dropdown from "@/public/Images/dropdown.png";
 import info from "@/public/Images/info.png";
-import { cravingCategories, uploadCravings } from "@/utils/api";
+import {
+  cravingCategories,
+  uploadCravings,
+  uploadImageCloudinary,
+} from "@/utils/api";
 import { CravingCategory, Cravings } from "@/utils/types";
 import { Spinner } from "@/components/Loader";
+import { useUserDetails } from "@/contexts/UserDetailsContext";
 
 // const categories = [
 //   "Food & Snacks",
@@ -22,12 +27,13 @@ import { Spinner } from "@/components/Loader";
 // ];
 
 const Page = () => {
+  const { user } = useUserDetails();
   const [cravings, setCravings] = useState<Cravings>({
     name: "",
     category: "",
     description: "",
     price_estimate: "",
-    delivery_address: "",
+    delivery_address: user?.delivery_address || "",
     recommended_vendor: "",
     vendor_link: "",
     notes: "",
@@ -43,7 +49,25 @@ const Page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLInputElement>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Create a local preview
+    const preview = URL.createObjectURL(file);
+    setPreviewUrl(preview);
+    setSelectedFile(file);
+
+    if (imageRef.current) {
+      imageRef.current.value = "";
+    }
+  };
+
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
@@ -87,9 +111,59 @@ const Page = () => {
     setSuccessMsg("");
     setErrMsg("");
     setIsSubmitting(true);
+    if (!selectedFile) {
+      setErrMsg("Please select an image");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!cravings.category) {
+      setErrMsg("Please select a category");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!cravings.name) {
+      setErrMsg("Please enter a name");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!cravings.description) {
+      setErrMsg("Please enter a description");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!cravings.price_estimate) {
+      setErrMsg("Please enter a price estimate");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!cravings.delivery_address) {
+      setErrMsg("Please enter a delivery address");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!cravings.recommended_vendor) {
+      setErrMsg("Please recommend a preferred vendor");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!cravings.vendor_link) {
+      setErrMsg("Please provide a link to the vendor");
+      setIsSubmitting(false);
+      return;
+    }
+    // if(!cravings.notes){
+    //   setErrMsg("Please enter notes");
+    //   setIsSubmitting(false);
+    //   return;
+    // }
     try {
       console.log(cravings);
-      await uploadCravings(cravings);
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      const res = await uploadImageCloudinary(formData);
+      console.log(res);
+      const ImgUrl = res.data.image_url;
+      await uploadCravings({ ...cravings, image_url: ImgUrl });
       setSuccessMsg("Your Cravings has been uploaded successfully");
       setTimeout(() => {
         router.push("/home/cravings");
@@ -158,6 +232,48 @@ const Page = () => {
         </div>
       </div>
 
+      {/* Error Notification Bubble */}
+      <div
+        className={`fixed top-0 left-0 right-0 z-50 flex justify-center transition-transform duration-500 ease-out ${
+          errMsg ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
+        <div className="mx-4 mt-4 w-full max-w-md bg-[#333333] text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3">
+          <svg
+            className="w-5 h-5 flex-shrink-0 text-[#EC5934]"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+            />
+          </svg>
+          <p className="text-sm font-medium flex-1">{errMsg}</p>
+          <button
+            onClick={() => setErrMsg("")}
+            className="text-white/80 hover:text-white transition-colors"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
       <div className="px-7">
         <Headers text="Add New Cravings" />{" "}
         <form
@@ -165,16 +281,55 @@ const Page = () => {
           className="flex mt-10 flex-col gap-5 w-full "
           action=""
         >
-          <div className="w-full flex flex-col items-center border border-[#000000] border-dashed gap-4  py-5 px-2 rounded-3xl ">
-            <Image src={uploadImg1} alt="uploadImg" />
-            <button className=" rounded-full bg-[#EC5934] py-3 text-[15px] px-7 text-white font-semibold flex items-center gap-2  ">
-              <Image src={uploadImg2} alt="uploadImg" /> Upload A Craving
-            </button>
-            <p className="text-sm font-medium">or drag and drop image</p>
-            <p className="text-[10px] mt-[-14px] ">paste image or ctrl + v</p>
-          </div>
+          {previewUrl ? (
+            <div className="w-full relative rounded-3xl overflow-hidden border border-[#E0E0E0]">
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="w-full h-[200px] object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviewUrl(null);
+                  setSelectedFile(null);
+                }}
+                className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+              >
+                ✕
+              </button>
+              <div
+                onClick={() => imageRef.current?.click()}
+                className="absolute bottom-3 right-3 bg-[#EC5934] hover:bg-[#d44e2e] text-white text-[11px] font-medium px-4 py-2 rounded-full cursor-pointer transition-colors"
+              >
+                Change Image
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={() => imageRef.current?.click()}
+              className="w-full flex flex-col items-center border border-[#000000] border-dashed gap-4 py-5 px-2 rounded-3xl cursor-pointer"
+            >
+              <Image src={uploadImg1} alt="uploadImg" />
+              <button
+                type="button"
+                className="rounded-full bg-[#EC5934] py-3 text-[15px] px-7 text-white font-semibold flex items-center gap-2"
+              >
+                <Image src={uploadImg2} alt="uploadImg" /> Upload A Craving
+              </button>
+            </div>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="hidden"
+            ref={imageRef}
+          />
           <div className="flex flex-col gap-1" ref={categoryRef}>
-            <label className="text-sm">Category</label>
+            <label className="text-sm">
+              Category <span className="text-red-500">*</span>{" "}
+            </label>
             <div className="relative">
               <div
                 className="flex justify-between items-center gap-3 border rounded-md px-2 text-sm py-2 w-full border-black cursor-pointer"
@@ -246,7 +401,7 @@ const Page = () => {
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-sm" htmlFor="itemName">
-              Item Name
+              Item Name <span className="text-red-500">*</span>
             </label>
             <input
               className=" outline-none border rounded-md text-sm px-2 py-2 w-full border-black bg-transparent "
@@ -263,7 +418,7 @@ const Page = () => {
 
           <div className="flex flex-col gap-1">
             <label className="text-sm" htmlFor="description">
-              Craving Description
+              Craving Description <span className="text-red-500">*</span>
             </label>
             <input
               className=" outline-none border rounded-md text-sm px-2 py-2 w-full border-black bg-transparent "
@@ -280,7 +435,7 @@ const Page = () => {
 
           <div className="flex flex-col gap-1">
             <label className="text-sm" htmlFor="deliveryAddy">
-              Delivery Address
+              Delivery Address <span className="text-red-500">*</span>
             </label>
             <input
               className=" outline-none border rounded-md text-sm px-2 py-2 w-full border-black bg-transparent "
@@ -305,7 +460,7 @@ const Page = () => {
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-sm" htmlFor="averageCost">
-              Average Cost
+              Average Cost <span className="text-red-500">*</span>
             </label>
             <div className="flex items-center gap-3 border rounded-lg  w-full border-black ">
               <p className="bg-[#D9D9D9] text-[#50555C] text-xl px-4 rounded-l-lg h-full py-2 ">
@@ -329,7 +484,7 @@ const Page = () => {
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-sm" htmlFor="recVendor">
-              Recommended Vendor
+              Recommended Vendor <span className="text-red-500">*</span>
             </label>
             <input
               className=" outline-none border rounded-md px-2 text-sm py-2 w-full border-black bg-transparent "
@@ -343,7 +498,7 @@ const Page = () => {
               }
             />
           </div>
-          <div className="flex flex-col gap-1">
+          {/* <div className="flex flex-col gap-1">
             <label className="text-sm" htmlFor="vendorContact">
               Vendor Contact
             </label>
@@ -358,10 +513,10 @@ const Page = () => {
               //   setCravings({ ...cravings, phone_number: e.target.value })
               // }
             />
-          </div>
+          </div> */}
           <div className="flex flex-col gap-1">
             <label className="text-sm" htmlFor="link">
-              Link
+              Link <span className="text-red-500">*</span>
             </label>
             <input
               className=" outline-none border rounded-md px-2 text-sm py-2 w-full border-black bg-transparent "
